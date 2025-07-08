@@ -1,50 +1,301 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestión de Detalle de Rutas</title>
+  <title>Sistema de Entrega de Paquetes</title>
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom CSS -->
   <link href="/css/styles.css" rel="stylesheet">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Entrega de Paquetes</a>
+    <a class="navbar-brand" href="/">Sistema de Entrega de Paquetes</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/vehiculos.html">Vehículos</a>
+          <a class="nav-link active" href="/index.html">🏠 Inicio</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/conductores.html">Conductores</a>
+          <a class="nav-link" href="/vehiculos.html">🚛 Vehículos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/rutasProgramadas.html">Rutas Programadas</a>
+          <a class="nav-link" href="/conductores.html">👨‍💼 Conductores</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/detalleRutas.html">Detalle de Rutas</a>
+          <a class="nav-link" href="/rutasProgramadas.html">🛣️ Rutas Programadas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/buscarRutas.html">Buscar Rutas</a>
+          <a class="nav-link" href="/detalleRutas.html">📍 Detalle de Rutas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/mapa.html">Mapa de Rutas</a>
+          <a class="nav-link" href="/buscarRutas.html">🔍 Buscar Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mapa.html">🗺️ Mapa de Rutas</a>
         </li>
       </ul>
     </div>
   </nav>
-  
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <!-- Header Principal -->
+        <div class="text-center mb-5">
+          <h1 class="fade-in">🚚 Sistema de Gestión de Entrega de Paquetes</h1>
+          <p class="lead text-muted">Administra de manera eficiente vehículos, conductores y rutas de entrega</p>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="row mb-5">
+          <!-- Card Vehículos -->
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card vehicle-card h-100 fade-in">
+              <div class="card-body text-center">
+                <div class="mb-3">
+                  <div style="font-size: 3rem; color: #4a90e2;">🚛</div>
+                </div>
+                <h5 class="card-title text-gradient">Gestión de Vehículos</h5>
+                <p class="card-text">Administra la flota de vehículos disponibles para entregas</p>
+                <div class="mt-auto">
+                  <a href="/vehiculos.html" class="btn btn-primary btn-block">
+                    <i class="fas fa-truck mr-2"></i>Gestionar Vehículos
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Conductores -->
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card driver-card h-100 fade-in">
+              <div class="card-body text-center">
+                <div class="mb-3">
+                  <div style="font-size: 3rem; color: #27ae60;">👨‍💼</div>
+                </div>
+                <h5 class="card-title text-gradient">Gestión de Conductores</h5>
+                <p class="card-text">Administra el personal de conductores y sus licencias</p>
+                <div class="mt-auto">
+                  <a href="/conductores.html" class="btn btn-success btn-block">
+                    <i class="fas fa-users mr-2"></i>Gestionar Conductores
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Rutas -->
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card route-card h-100 fade-in">
+              <div class="card-body text-center">
+                <div class="mb-3">
+                  <div style="font-size: 3rem; color: #f39c12;">🛣️</div>
+                </div>
+                <h5 class="card-title text-gradient">Rutas Programadas</h5>
+                <p class="card-text">Planifica y programa las rutas de entrega diarias</p>
+                <div class="mt-auto">
+                  <a href="/rutasProgramadas.html" class="btn btn-warning btn-block">
+                    <i class="fas fa-route mr-2"></i>Programar Rutas
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Mapa -->
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card route-card h-100 fade-in">
+              <div class="card-body text-center">
+                <div class="mb-3">
+                  <div style="font-size: 3rem; color: #e74c3c;">🗺️</div>
+                </div>
+                <h5 class="card-title text-gradient">Visualización en Mapa</h5>
+                <p class="card-text">Visualiza rutas y puntos de entrega en el mapa</p>
+                <div class="mt-auto">
+                  <a href="/mapa.html" class="btn btn-info btn-block">
+                    <i class="fas fa-map mr-2"></i>Ver Mapa
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accesos Rápidos -->
+        <div class="card mb-5">
+          <div class="card-body">
+            <h3 class="text-center mb-4">🚀 Accesos Rápidos</h3>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <a href="/detalleRutas.html" class="btn btn-outline-primary btn-block btn-lg">
+                  📍 Detalle de Rutas
+                </a>
+              </div>
+              <div class="col-md-4 mb-3">
+                <a href="/buscarRutas.html" class="btn btn-outline-secondary btn-block btn-lg">
+                  🔍 Buscar Rutas
+                </a>
+              </div>
+              <div class="col-md-4 mb-3">
+                <button onclick="mostrarEstadisticas()" class="btn btn-outline-info btn-block btn-lg">
+                  📊 Estadísticas
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel de Estadísticas -->
+        <div id="estadisticasPanel" class="card" style="display: none;">
+          <div class="card-body">
+            <h3 class="text-center mb-4">📊 Estadísticas del Sistema</h3>
+            <div class="row text-center">
+              <div class="col-md-3 mb-3">
+                <div class="bg-gradient p-3 rounded">
+                  <h4 id="totalVehiculos" class="text-primary">-</h4>
+                  <p class="mb-0">Vehículos Registrados</p>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="bg-gradient p-3 rounded">
+                  <h4 id="totalConductores" class="text-success">-</h4>
+                  <p class="mb-0">Conductores Activos</p>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="bg-gradient p-3 rounded">
+                  <h4 id="totalRutas" class="text-warning">-</h4>
+                  <p class="mb-0">Rutas Programadas</p>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="bg-gradient p-3 rounded">
+                  <h4 id="totalPuntos" class="text-info">-</h4>
+                  <p class="mb-0">Puntos de Entrega</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información del Sistema -->
+        <div class="card mt-4 mb-4">
+          <div class="card-body">
+            <h4 class="text-center mb-4">ℹ️ Información del Sistema</h4>
+            <div class="row">
+              <div class="col-md-6">
+                <h5>🎯 Características Principales:</h5>
+                <ul class="list-unstyled">
+                  <li>✅ Gestión completa de vehículos de entrega</li>
+                  <li>✅ Control de conductores y licencias</li>
+                  <li>✅ Programación inteligente de rutas</li>
+                  <li>✅ Visualización en mapa interactivo</li>
+                  <li>✅ Búsqueda avanzada de rutas</li>
+                  <li>✅ Optimización automática de trayectos</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h5>🏪 Bodega Principal:</h5>
+                <div class="alert alert-info">
+                  <p class="mb-2"><strong>📍 Ubicación:</strong> Bogotá, Colombia</p>
+                  <p class="mb-2"><strong>🌐 Coordenadas:</strong> 4.7578, -74.0449</p>
+                  <p class="mb-0"><strong>📦 Estado:</strong> <span class="status-badge status-active">Operativa</span></p>
+                </div>
+                <h5>🔧 Tecnologías Utilizadas:</h5>
+                <div class="d-flex flex-wrap">
+                  <span class="badge badge-primary mr-2 mb-2">Node.js</span>
+                  <span class="badge badge-success mr-2 mb-2">Express.js</span>
+                  <span class="badge badge-info mr-2 mb-2">MySQL</span>
+                  <span class="badge badge-warning mr-2 mb-2">Bootstrap</span>
+                  <span class="badge badge-secondary mr-2 mb-2">MapLibre</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Bootstrap JS, Popper.js, and jQuery -->
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <script>
+    // Función para mostrar estadísticas
+    function mostrarEstadisticas() {
+      const panel = document.getElementById('estadisticasPanel');
+      if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+        panel.classList.add('fade-in');
+        cargarEstadisticas();
+      } else {
+        panel.style.display = 'none';
+      }
+    }
+
+    // Cargar estadísticas del sistema
+    function cargarEstadisticas() {
+      // Cargar vehículos
+      fetch('/api/vehiculos')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('totalVehiculos').textContent = data.length || 0;
+        })
+        .catch(() => {
+          document.getElementById('totalVehiculos').textContent = '0';
+        });
+
+      // Cargar conductores
+      fetch('/api/conductores')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('totalConductores').textContent = data.length || 0;
+        })
+        .catch(() => {
+          document.getElementById('totalConductores').textContent = '0';
+        });
+
+      // Cargar rutas programadas
+      fetch('/api/rutasProgramadas')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('totalRutas').textContent = data.length || 0;
+        })
+        .catch(() => {
+          document.getElementById('totalRutas').textContent = '0';
+        });
+
+      // Cargar detalles de rutas
+      fetch('/api/detalleRutas')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('totalPuntos').textContent = data.length || 0;
+        })
+        .catch(() => {
+          document.getElementById('totalPuntos').textContent = '0';
+        });
+    }
+
+    // Animaciones al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      // Agregar clase fade-in a elementos con delay
+      const cards = document.querySelectorAll('.vehicle-card, .driver-card, .route-card');
+      cards.forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add('fade-in');
+        }, index * 200);
+      });
+    });
+  </script>
 </body>
 </html>
 

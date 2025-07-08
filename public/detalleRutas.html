@@ -6,91 +6,200 @@
   <title>Gestión de Detalle de Rutas</title>
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <!-- Custom CSS -->
   <link href="/css/styles.css" rel="stylesheet">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Entrega de Paquetes</a>
+  <!-- Navegación mejorada -->
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Sistema de Entrega de Paquetes</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/vehiculos.html">Vehículos</a>
+          <a class="nav-link active" href="/index.html">🏠 Inicio</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/conductores.html">Conductores</a>
+          <a class="nav-link" href="/vehiculos.html">🚛 Vehículos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/rutasProgramadas.html">Rutas Programadas</a>
+          <a class="nav-link" href="/conductores.html">👨‍💼 Conductores</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/detalleRutas.html">Detalle de Rutas</a>
-        </li>            <li class="nav-item">
-            <a class="nav-link active" href="/buscarRutas.html">Buscar Rutas</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/mapa.html">Mapa de Rutas</a>
-          </li>
+          <a class="nav-link" href="/rutasProgramadas.html">🛣️ Rutas Programadas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/detalleRutas.html">📍 Detalle de Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/buscarRutas.html">🔍 Buscar Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mapa.html">🗺️ Mapa de Rutas</a>
+        </li>
       </ul>
     </div>
-  </nav>
-  <div class="container mt-5">
-    <div class="card">
-      <div class="card-body">
-        <h1 class="mb-4">Gestión de Detalle de Rutas</h1>
-        <form id="detalle-ruta-form" class="mb-4">
-          <div id="error-message" class="alert alert-danger" style="display: none;"></div>
-          <div id="success-message" class="alert alert-success" style="display: none;"></div>
-          <div class="form-group">
-            <label for="ruta">Ruta</label>
-            <select class="form-control" id="ruta" required>
-              <option value="">Seleccione una ruta</option>
-              <!-- Opciones de rutas se cargarán aquí -->
-            </select>
+  </nav>  <!-- Contenido principal -->
+  <div class="main-content">
+    <div class="container">
+      <!-- Header de la página -->
+      <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="page-title">
+              <i class="fas fa-list-alt text-primary"></i>
+              Gestión de Detalle de Rutas
+            </h1>
+            <p class="page-subtitle">Administra los detalles específicos de cada ruta de entrega</p>
           </div>
-          <div class="form-group">
-            <label for="latitud">Latitud</label>
-            <input type="number" step="any" class="form-control" id="latitud" placeholder="4.6097100" required>
+          <div class="header-actions">
+            <button class="btn btn-outline-primary btn-sm" onclick="location.reload()">
+              <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
           </div>
-          <div class="form-group">
-            <label for="longitud">Longitud</label>
-            <input type="number" step="any" class="form-control" id="longitud" placeholder="-74.0817500" required>
+        </div>
+      </div>
+
+      <!-- Formulario de detalle de rutas -->
+      <div class="content-card">
+        <div class="card-header-custom">
+          <h5 class="mb-0">
+            <i class="fas fa-plus-circle text-success"></i>
+            Agregar Nuevo Detalle de Ruta
+          </h5>
+        </div>
+        <div class="card-body">
+          <form id="detalle-ruta-form">
+            <!-- Mensajes de estado -->
+            <div id="error-message" class="alert alert-danger modern-alert" style="display: none;">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span class="alert-text"></span>
+            </div>
+            <div id="success-message" class="alert alert-success modern-alert" style="display: none;">
+              <i class="fas fa-check-circle"></i>
+              <span class="alert-text"></span>
+            </div>
+
+            <!-- Primera fila del formulario -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="ruta" class="form-label">
+                  <i class="fas fa-route text-primary"></i>
+                  Ruta Principal
+                </label>
+                <select class="form-control modern-input" id="ruta" required>
+                  <option value="">Seleccione una ruta</option>
+                  <!-- Opciones de rutas se cargarán aquí -->
+                </select>
+                <small class="form-text">Selecciona la ruta principal a la que pertenece este detalle</small>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="numero_paquetes" class="form-label">
+                  <i class="fas fa-box text-warning"></i>
+                  Número de Paquetes
+                </label>
+                <input type="number" min="1" class="form-control modern-input" id="numero_paquetes" placeholder="1" required>
+                <small class="form-text">Cantidad de paquetes para esta ubicación</small>
+              </div>
+            </div>
+
+            <!-- Segunda fila del formulario -->
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="latitud" class="form-label">
+                  <i class="fas fa-map-marker-alt text-danger"></i>
+                  Latitud
+                </label>
+                <input type="number" step="any" class="form-control modern-input" id="latitud" placeholder="4.6097100" required>
+                <small class="form-text">Coordenada de latitud (ej: 4.6097100)</small>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="longitud" class="form-label">
+                  <i class="fas fa-map-marker-alt text-danger"></i>
+                  Longitud
+                </label>
+                <input type="number" step="any" class="form-control modern-input" id="longitud" placeholder="-74.0817500" required>
+                <small class="form-text">Coordenada de longitud (ej: -74.0817500)</small>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="direccion" class="form-label">
+                  <i class="fas fa-map-signs text-info"></i>
+                  Dirección
+                </label>
+                <input type="text" class="form-control modern-input" id="direccion" placeholder="Carrera 7 # 32-16, Centro, Bogotá" required>
+                <small class="form-text">Dirección completa del punto de entrega</small>
+              </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-modern">
+                <i class="fas fa-save"></i>
+                Guardar Detalle de Ruta
+              </button>
+              <button type="button" class="btn btn-secondary btn-modern" onclick="cancelarEdicion()">
+                <i class="fas fa-times"></i>
+                Cancelar
+              </button>
+            </div>
+
+            <!-- Campos ocultos -->
+            <input type="hidden" id="editMode" value="false">
+            <input type="hidden" id="detalleRutaId" value="">
+          </form>
+        </div>
+      </div>
+
+      <!-- Lista de detalles de rutas -->
+      <div class="content-card mt-4">
+        <div class="card-header-custom">
+          <h5 class="mb-0">
+            <i class="fas fa-list text-info"></i>
+            Lista de Detalles de Rutas
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table modern-table">
+              <thead>
+                <tr>
+                  <th>
+                    <i class="fas fa-route"></i>
+                    Ruta
+                  </th>
+                  <th>
+                    <i class="fas fa-map-marker-alt"></i>
+                    Latitud
+                  </th>
+                  <th>
+                    <i class="fas fa-map-marker-alt"></i>
+                    Longitud
+                  </th>
+                  <th>
+                    <i class="fas fa-map-signs"></i>
+                    Dirección
+                  </th>
+                  <th>
+                    <i class="fas fa-box"></i>
+                    Paquetes
+                  </th>
+                  <th>
+                    <i class="fas fa-cogs"></i>
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="detalles-ruta-tbody">
+                <!-- Aquí se mostrarán los detalles de rutas -->
+              </tbody>
+            </table>
           </div>
-          <div class="form-group">
-            <label for="direccion">Dirección</label>
-            <input type="text" class="form-control" id="direccion" placeholder="Carrera 7 # 32-16, Centro, Bogotá" required>
-          </div>
-          <div class="form-group">
-            <label for="numero_paquetes">Número de Paquetes</label>
-            <input type="number" min="1" class="form-control" id="numero_paquetes" placeholder="1" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Guardar Detalle de Ruta</button>
-          <button type="button" class="btn btn-secondary" onclick="cancelarEdicion()">Cancelar</button>
-          <input type="hidden" id="editMode" value="false">
-          <input type="hidden" id="detalleRutaId" value="">
-        </form>
-        <div id="detalles-ruta-list">
-          <h2>Lista de Detalles de Rutas</h2>
-          <table class="table table-striped">
-            <thead class="thead-dark">
-              <tr>
-                <th>Ruta</th>
-                <th>Latitud</th>
-                <th>Longitud</th>
-                <th>Dirección</th>
-                <th>Número de Paquetes</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Aquí se mostrarán los detalles de rutas -->
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
@@ -110,13 +219,13 @@
       successDiv.style.display = 'none';
       
       if (tipo === 'error') {
-        errorDiv.textContent = mensaje;
+        errorDiv.querySelector('.alert-text').textContent = mensaje;
         errorDiv.style.display = 'block';
         setTimeout(() => {
           errorDiv.style.display = 'none';
         }, 5000);
       } else if (tipo === 'success') {
-        successDiv.textContent = mensaje;
+        successDiv.querySelector('.alert-text').textContent = mensaje;
         successDiv.style.display = 'block';
         setTimeout(() => {
           successDiv.style.display = 'none';
@@ -161,7 +270,7 @@
       fetch('/api/detalleRutas')
         .then(response => response.json())
         .then(data => {
-          const tableBody = document.querySelector('#detalles-ruta-list tbody');
+          const tableBody = document.querySelector('#detalles-ruta-tbody');
           tableBody.innerHTML = '';
           data.forEach(detalle => {
             const row = document.createElement('tr');

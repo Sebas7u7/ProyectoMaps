@@ -13,29 +13,32 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Entrega de Paquetes</a>
+    <a class="navbar-brand" href="/">Sistema de Entrega de Paquetes</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/vehiculos.html">Vehículos</a>
+          <a class="nav-link active" href="/index.html">🏠 Inicio</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/conductores.html">Conductores</a>
+          <a class="nav-link" href="/vehiculos.html">🚛 Vehículos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/rutasProgramadas.html">Rutas Programadas</a>
+          <a class="nav-link" href="/conductores.html">👨‍💼 Conductores</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/detalleRutas.html">Detalle de Rutas</a>
+          <a class="nav-link" href="/rutasProgramadas.html">🛣️ Rutas Programadas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/buscarRutas.html">Buscar Rutas</a>
+          <a class="nav-link" href="/detalleRutas.html">📍 Detalle de Rutas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/mapa.html">Mapa de Rutas</a>
+          <a class="nav-link" href="/buscarRutas.html">🔍 Buscar Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mapa.html">🗺️ Mapa de Rutas</a>
         </li>
       </ul>
     </div>
@@ -45,10 +48,6 @@
       <div class="card-body">
         <h1 class="mb-4">Gestión de Conductores</h1>
         <form id="conductor-form" class="mb-4">
-          <div class="form-group">
-            <label for="id">ID</label>
-            <input type="text" class="form-control" id="id" required disabled>
-          </div>
           <div class="form-group">
             <label for="nombres">Nombres</label>
             <input type="text" class="form-control" id="nombres" required>
@@ -71,13 +70,13 @@
           </div>
           <button type="submit" class="btn btn-primary">Guardar Conductor</button>
           <input type="hidden" id="editMode" value="false">
+          <input type="hidden" id="conductorId" value="">
         </form>
         <div id="conductores-list">
           <h2>Lista de Conductores</h2>
           <table class="table table-striped">
             <thead class="thead-dark">
               <tr>
-                <th>ID</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
                 <th>Número de Licencia</th>
@@ -114,7 +113,6 @@
             const row = document.createElement('tr');
             row.id = `conductor-${conductor.id}`;
             row.innerHTML = `
-              <td>${conductor.id}</td>
               <td>${conductor.nombres}</td>
               <td>${conductor.apellidos}</td>
               <td>${conductor.numero_licencia}</td>
@@ -145,7 +143,7 @@
         correo: document.getElementById('correo').value
       };
 
-      const id = document.getElementById('id').value;
+      const id = document.getElementById('conductorId').value;
       const editMode = document.getElementById('editMode').value;
       const method = editMode === "true" ? 'PUT' : 'POST';
       const url = editMode === "true" ? `/api/conductores/${id}` : '/api/conductores';
@@ -173,7 +171,6 @@
           const row = document.createElement('tr');
           row.id = `conductor-${data.id}`;
           row.innerHTML = `
-            <td>${data.id}</td>
             <td>${data.nombres}</td>
             <td>${data.apellidos}</td>
             <td>${data.numero_licencia}</td>
@@ -188,7 +185,6 @@
         } else {
           const row = document.getElementById(`conductor-${id}`);
           row.innerHTML = `
-            <td>${id}</td>
             <td>${data.nombres}</td>
             <td>${data.apellidos}</td>
             <td>${data.numero_licencia}</td>
@@ -202,7 +198,7 @@
         }
         document.getElementById('conductor-form').reset();
         document.getElementById('editMode').value = "false";
-        document.getElementById('id').disabled = false;
+        document.getElementById('conductorId').value = "";
       })
       .catch(error => {
         console.error('Error:', error);
@@ -247,14 +243,13 @@
           return response.json();
         })
         .then(data => {
-          document.getElementById('id').value = data.id;
+          document.getElementById('conductorId').value = data.id;
           document.getElementById('nombres').value = data.nombres;
           document.getElementById('apellidos').value = data.apellidos;
           document.getElementById('numero_licencia').value = data.numero_licencia;
           document.getElementById('telefono').value = data.telefono;
           document.getElementById('correo').value = data.correo;
           document.getElementById('editMode').value = "true";
-          document.getElementById('id').disabled = true;
         })
         .catch(error => {
           console.error('Error al cargar conductor:', error);

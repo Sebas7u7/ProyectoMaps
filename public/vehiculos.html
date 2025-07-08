@@ -1,102 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestión de Vehículos</title>
+  <title>Gestión de Vehículos - Sistema de Entrega</title>
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom CSS -->
   <link href="/css/styles.css" rel="stylesheet">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Entrega de Paquetes</a>
+    <a class="navbar-brand" href="/">Sistema de Entrega de Paquetes</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/vehiculos.html">Vehículos</a>
+          <a class="nav-link" href="/index.html">🏠 Inicio</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/conductores.html">Conductores</a>
+          <a class="nav-link active" href="/vehiculos.html">🚛 Vehículos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/rutasProgramadas.html">Rutas Programadas</a>
+          <a class="nav-link" href="/conductores.html">👨‍💼 Conductores</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/detalleRutas.html">Detalle de Rutas</a>
+          <a class="nav-link" href="/rutasProgramadas.html">🛣️ Rutas Programadas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/buscarRutas.html">Buscar Rutas</a>
+          <a class="nav-link" href="/detalleRutas.html">📍 Detalle de Rutas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/mapa.html">Mapa de Rutas</a>
+          <a class="nav-link" href="/buscarRutas.html">🔍 Buscar Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mapa.html">🗺️ Mapa de Rutas</a>
         </li>
       </ul>
     </div>
   </nav>
-  <div class="container mt-5">
+  <div class="container mt-4">
     <div class="card">
       <div class="card-body">
-        <h1 class="mb-4">Gestión de Vehículos</h1>
-        <form id="vehiculo-form" class="mb-4">
-          <div class="form-group">
-            <label for="placa">Placa <small class="text-muted">(3 letras + 3 números, ej: ABC123)</small></label>
-            <input type="text" class="form-control" id="placa" required 
-                   pattern="[A-Za-z]{3}[0-9]{3}" 
-                   maxlength="6" 
-                   placeholder="ABC123"
-                   title="La placa debe tener exactamente 3 letras seguidas de 3 números">
-          </div>
-          <div class="form-group">
-            <label for="modelo">Modelo</label>
-            <input type="text" class="form-control" id="modelo" required 
-                   minlength="2" 
-                   maxlength="50"
-                   pattern="[A-Za-z0-9\s\-]+"
-                   placeholder="Ej: Corolla, Ranger"
-                   title="Solo letras, números, espacios y guiones">
-          </div>
-          <div class="form-group">
-            <label for="color">Color</label>
-            <input type="text" class="form-control" id="color" required 
-                   minlength="3" 
-                   maxlength="30"
-                   pattern="[A-Za-z\s]+"
-                   placeholder="Ej: Blanco, Azul"
-                   title="Solo letras y espacios">
-          </div>
-          <div class="form-group">
-            <label for="marca">Marca</label>
-            <input type="text" class="form-control" id="marca" required 
-                   minlength="2" 
-                   maxlength="30"
-                   pattern="[A-Za-z\s]+"
-                   placeholder="Ej: Toyota, Ford"
-                   title="Solo letras y espacios">
-          </div>
-          <div class="form-group">
-            <label for="capacidad_carga">Capacidad de Carga (kg)</label>
-            <div class="input-group">
-              <input type="number" class="form-control" id="capacidad_carga" required 
-                     min="50" 
-                     max="50000" 
-                     step="0.01"
-                     placeholder="500">
-              <div class="input-group-append">
-                <span class="input-group-text">kg</span>
+        <!-- Mensajes de Error y Éxito -->
+        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+        <div id="success-message" class="alert alert-success" style="display: none;"></div>
+
+        <h1>🚛 Gestión de Vehículos</h1>
+        <p class="lead text-muted">Administra la flota de vehículos disponibles para entregas</p>
+        <!-- Formulario de Vehículos -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="text-gradient mb-4">➕ Agregar Nuevo Vehículo</h3>
+            <form id="vehiculo-form">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="placa">🏷️ Placa *</label>
+                    <input type="text" class="form-control" id="placa" required 
+                           pattern="[A-Za-z]{3}[0-9]{3}" 
+                           maxlength="6" 
+                           placeholder="ABC123"
+                           title="La placa debe tener exactamente 3 letras seguidas de 3 números">
+                    <small class="form-text text-muted">Formato: 3 letras + 3 números (ej: ABC123)</small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="modelo">🚗 Modelo *</label>
+                    <input type="text" class="form-control" id="modelo" required 
+                           minlength="2" 
+                           maxlength="50"
+                           pattern="[A-Za-z0-9\s\-]+"
+                           placeholder="Ej: Corolla, Ranger"
+                           title="Solo letras, números, espacios y guiones">
+                  </div>
+                </div>
               </div>
-            </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="color">🎨 Color *</label>
+                    <input type="text" class="form-control" id="color" required 
+                           minlength="3" 
+                           maxlength="30"
+                           pattern="[A-Za-z\s]+"
+                           placeholder="Ej: Blanco, Azul"
+                           title="Solo letras y espacios">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="marca">🏭 Marca *</label>
+                    <input type="text" class="form-control" id="marca" required 
+                           minlength="2" 
+                           maxlength="30"
+                           pattern="[A-Za-z\s]+"
+                           placeholder="Ej: Toyota, Ford"
+                           title="Solo letras y espacios">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label for="capacidad_carga">⚖️ Capacidad de Carga (kg) *</label>
+                    <div class="input-group">
+                      <input type="number" class="form-control" id="capacidad_carga" required 
+                             min="50" 
+                             max="50000" 
+                             step="0.01"
+                             placeholder="500">
+                      <div class="input-group-append">
+                        <span class="input-group-text">kg</span>
+                      </div>
+                    </div>
+                    <small class="form-text text-muted">Entre 50 y 50,000 kg</small>
+                  </div>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                  <div class="form-group w-100">
+                    <button type="submit" class="btn btn-primary btn-block">
+                      💾 Guardar Vehículo
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-block mt-2" id="cancelar-edicion" onclick="cancelarEdicion()" style="display: none;">
+                      ❌ Cancelar
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" id="editMode" value="false">
+            </form>
           </div>
-          <button type="submit" class="btn btn-primary">Guardar Vehículo</button>
-          <button type="button" class="btn btn-secondary ml-2" id="cancelar-edicion" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
-          <input type="hidden" id="editMode" value="false">
-        </form>
+        </div>
         <div id="vehiculos-list">
           <h2>Lista de Vehículos</h2>
           <table class="table table-striped">

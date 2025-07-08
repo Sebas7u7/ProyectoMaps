@@ -6,90 +6,191 @@
   <title>Gestión de Rutas Programadas</title>
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <!-- Custom CSS -->
   <link href="/css/styles.css" rel="stylesheet">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Entrega de Paquetes</a>
+  <!-- Navegación mejorada -->
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Sistema de Entrega de Paquetes</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/vehiculos.html">Vehículos</a>
+          <a class="nav-link active" href="/index.html">🏠 Inicio</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/conductores.html">Conductores</a>
+          <a class="nav-link" href="/vehiculos.html">🚛 Vehículos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/rutasProgramadas.html">Rutas Programadas</a>
+          <a class="nav-link" href="/conductores.html">👨‍💼 Conductores</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/detalleRutas.html">Detalle de Rutas</a>
+          <a class="nav-link" href="/rutasProgramadas.html">🛣️ Rutas Programadas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="/buscarRutas.html">Buscar Rutas</a>
+          <a class="nav-link" href="/detalleRutas.html">📍 Detalle de Rutas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/mapa.html">Mapa de Rutas</a>
+          <a class="nav-link" href="/buscarRutas.html">🔍 Buscar Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mapa.html">🗺️ Mapa de Rutas</a>
         </li>
       </ul>
     </div>
-  </nav>
-  <div class="container mt-5">
-    <div class="card">
-      <div class="card-body">
-        <h1 class="mb-4">Gestión de Rutas Programadas</h1>
-        <form id="ruta-form" class="mb-4">
-          <div id="error-message" class="alert alert-danger" style="display: none;"></div>
-          <div id="success-message" class="alert alert-success" style="display: none;"></div>
-          <div class="form-group">
-            <label for="conductor">Conductor</label>
-            <select class="form-control" id="conductor" required>
-              <option value="">Seleccione un conductor</option>
-              <!-- Opciones de conductores se cargarán aquí -->
-            </select>
+  </nav>  <!-- Contenido principal -->
+  <div class="main-content">
+    <div class="container">
+      <!-- Header de la página -->
+      <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1 class="page-title">
+              <i class="fas fa-route text-primary"></i>
+              Gestión de Rutas Programadas
+            </h1>
+            <p class="page-subtitle">Programa y administra las rutas de entrega para tus conductores</p>
           </div>
-          <div class="form-group">
-            <label for="vehiculo">Vehículo</label>
-            <select class="form-control" id="vehiculo" required>
-              <option value="">Seleccione un vehículo</option>
-              <!-- Opciones de vehículos se cargarán aquí -->
-            </select>
+          <div class="header-actions">
+            <button class="btn btn-outline-primary btn-sm" onclick="location.reload()">
+              <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
           </div>
-          <div class="form-group">
-            <label for="fecha">Fecha</label>
-            <input type="date" class="form-control" id="fecha" required>
+        </div>
+      </div>
+
+      <!-- Formulario de rutas programadas -->
+      <div class="content-card">
+        <div class="card-header-custom">
+          <h5 class="mb-0">
+            <i class="fas fa-plus-circle text-success"></i>
+            Programar Nueva Ruta
+          </h5>
+        </div>
+        <div class="card-body">
+          <form id="ruta-form">
+            <!-- Mensajes de estado -->
+            <div id="error-message" class="alert alert-danger modern-alert" style="display: none;">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span class="alert-text"></span>
+            </div>
+            <div id="success-message" class="alert alert-success modern-alert" style="display: none;">
+              <i class="fas fa-check-circle"></i>
+              <span class="alert-text"></span>
+            </div>
+
+            <!-- Primera fila del formulario -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="conductor" class="form-label">
+                  <i class="fas fa-user text-primary"></i>
+                  Conductor Asignado
+                </label>
+                <select class="form-control modern-input" id="conductor" required>
+                  <option value="">Seleccione un conductor</option>
+                  <!-- Opciones de conductores se cargarán aquí -->
+                </select>
+                <small class="form-text">Selecciona el conductor que realizará la ruta</small>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="vehiculo" class="form-label">
+                  <i class="fas fa-truck text-warning"></i>
+                  Vehículo Asignado
+                </label>
+                <select class="form-control modern-input" id="vehiculo" required>
+                  <option value="">Seleccione un vehículo</option>
+                  <!-- Opciones de vehículos se cargarán aquí -->
+                </select>
+                <small class="form-text">Selecciona el vehículo a utilizar</small>
+              </div>
+            </div>
+
+            <!-- Segunda fila del formulario -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="fecha" class="form-label">
+                  <i class="fas fa-calendar text-info"></i>
+                  Fecha de Programación
+                </label>
+                <input type="date" class="form-control modern-input" id="fecha" required>
+                <small class="form-text">Fecha en que se ejecutará la ruta</small>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="ruta" class="form-label">
+                  <i class="fas fa-map-signs text-success"></i>
+                  Descripción de Ruta
+                </label>
+                <input type="text" class="form-control modern-input" id="ruta" placeholder="Ej: Av. Principal - Zona Norte" required>
+                <small class="form-text">Descripción breve de la ruta a seguir</small>
+              </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-modern">
+                <i class="fas fa-save"></i>
+                Guardar Ruta Programada
+              </button>
+              <button type="button" class="btn btn-secondary btn-modern" onclick="cancelarEdicion()">
+                <i class="fas fa-times"></i>
+                Cancelar
+              </button>
+            </div>
+
+            <!-- Campos ocultos -->
+            <input type="hidden" id="editMode" value="false">
+            <input type="hidden" id="rutaId" value="">
+          </form>
+        </div>
+      </div>
+
+      <!-- Lista de rutas programadas -->
+      <div class="content-card mt-4">
+        <div class="card-header-custom">
+          <h5 class="mb-0">
+            <i class="fas fa-list text-info"></i>
+            Lista de Rutas Programadas
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table modern-table">
+              <thead>
+                <tr>
+                  <th>
+                    <i class="fas fa-user"></i>
+                    Conductor
+                  </th>
+                  <th>
+                    <i class="fas fa-truck"></i>
+                    Vehículo
+                  </th>
+                  <th>
+                    <i class="fas fa-calendar"></i>
+                    Fecha
+                  </th>
+                  <th>
+                    <i class="fas fa-map-signs"></i>
+                    Ruta
+                  </th>
+                  <th>
+                    <i class="fas fa-cogs"></i>
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="rutas-tbody">
+                <!-- Aquí se mostrarán las rutas programadas -->
+              </tbody>
+            </table>
           </div>
-          <div class="form-group">
-            <label for="ruta">Ruta</label>
-            <input type="text" class="form-control" id="ruta" placeholder="Ej: Av. Principal - Zona Norte" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Guardar Ruta</button>
-          <button type="button" class="btn btn-secondary" onclick="cancelarEdicion()">Cancelar</button>
-          <input type="hidden" id="editMode" value="false">
-          <input type="hidden" id="rutaId" value="">
-        </form>
-        <div id="rutas-list">
-          <h2>Lista de Rutas Programadas</h2>
-          <table class="table table-striped">
-            <thead class="thead-dark">
-              <tr>
-                <th>Conductor</th>
-                <th>Vehículo</th>
-                <th>Fecha</th>
-                <th>Ruta</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Aquí se mostrarán las rutas programadas -->
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
@@ -127,13 +228,13 @@
       successDiv.style.display = 'none';
       
       if (tipo === 'error') {
-        errorDiv.textContent = mensaje;
+        errorDiv.querySelector('.alert-text').textContent = mensaje;
         errorDiv.style.display = 'block';
         setTimeout(() => {
           errorDiv.style.display = 'none';
         }, 5000);
       } else if (tipo === 'success') {
-        successDiv.textContent = mensaje;
+        successDiv.querySelector('.alert-text').textContent = mensaje;
         successDiv.style.display = 'block';
         setTimeout(() => {
           successDiv.style.display = 'none';
@@ -150,7 +251,8 @@
       document.getElementById('success-message').style.display = 'none';
       
       // Restaurar el texto del botón
-      document.querySelector('button[type="submit"]').textContent = 'Guardar Ruta';
+      const submitBtn = document.querySelector('button[type="submit"]');
+      submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Ruta Programada';
     }
 
     // Cargar opciones de conductores y vehículos
@@ -195,7 +297,7 @@
       fetch('/api/rutasProgramadas')
         .then(response => response.json())
         .then(data => {
-          const tableBody = document.querySelector('#rutas-list tbody');
+          const tableBody = document.querySelector('#rutas-tbody');
           tableBody.innerHTML = '';
           data.forEach(ruta => {
             const row = document.createElement('tr');
@@ -316,7 +418,8 @@
           document.getElementById('rutaId').value = id;
           
           // Cambiar el texto del botón
-          document.querySelector('button[type="submit"]').textContent = 'Actualizar Ruta';
+          const submitBtn = document.querySelector('button[type="submit"]');
+          submitBtn.innerHTML = '<i class="fas fa-edit"></i> Actualizar Ruta Programada';
         })
         .catch(error => {
           console.error('Error al cargar datos de la ruta:', error);
