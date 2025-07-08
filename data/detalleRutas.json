@@ -1,0 +1,34 @@
+[
+    {
+      "id": 1,
+      "ruta": "Ruta 101",
+      "latitud": 4.60971,
+      "longitud": -74.08175,
+      "direccion": "Calle 123 #45-67, Bogotá",
+      "numeroPaquete": "PKG001"
+    },
+    {
+      "id": 2,
+      "ruta": "Ruta 102",
+      "latitud": 4.65883,
+      "longitud": -74.09325,
+      "direccion": "Carrera 10 #20-30, Bogotá",
+      "numeroPaquete": "PKG002"
+    },
+    {
+      "id": 3,
+      "ruta": "Ruta 103",
+      "latitud": 4.67698,
+      "longitud": -74.04456,
+      "direccion": "Avenida 15 #100-110, Bogotá",
+      "numeroPaquete": "PKG003"
+    },
+    {
+      "id": 4,
+      "ruta": "Ruta 104",
+      "latitud": 4.71099,
+      "longitud": -74.07211,
+      "direccion": "Calle 80 #90-100, Bogotá",
+      "numeroPaquete": "PKG004"
+    }
+  ]

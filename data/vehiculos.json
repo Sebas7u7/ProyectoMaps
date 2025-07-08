@@ -1,0 +1,33 @@
+[
+  {
+    "placa": "ABC123",
+    "modelo": "Corolla",
+    "color": "Blanco",
+    "marca": "Toyota",
+    "capacidadCarga": "500 kg"
+  },
+  {
+    "id": 2,
+    "placa": "DEF456",
+    "modelo": "Ranger",
+    "color": "Azul",
+    "marca": "Ford",
+    "capacidadCarga": "1000 kg"
+  },
+  {
+    "id": 3,
+    "placa": "GHI789",
+    "modelo": "Spark",
+    "color": "Rojo",
+    "marca": "Chevrolet",
+    "capacidadCarga": "350 kg"
+  },
+  {
+    "id": 4,
+    "placa": "JKL012",
+    "modelo": "Frontier",
+    "color": "Negro",
+    "marca": "Nissan",
+    "capacidadCarga": "1200 kg"
+  }
+]

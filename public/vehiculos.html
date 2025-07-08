@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Vehículos</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="/css/styles.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Entrega de Paquetes</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/vehiculos.html">Vehículos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/conductores.html">Conductores</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/rutasProgramadas.html">Rutas Programadas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/detalleRutas.html">Detalle de Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/buscarRutas.html">Buscar Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mapa.html">Mapa de Rutas</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-body">
+        <h1 class="mb-4">Gestión de Vehículos</h1>
+        <form id="vehiculo-form" class="mb-4">
+          <div class="form-group">
+            <label for="placa">Placa <small class="text-muted">(3 letras + 3 números, ej: ABC123)</small></label>
+            <input type="text" class="form-control" id="placa" required 
+                   pattern="[A-Za-z]{3}[0-9]{3}" 
+                   maxlength="6" 
+                   placeholder="ABC123"
+                   title="La placa debe tener exactamente 3 letras seguidas de 3 números">
+          </div>
+          <div class="form-group">
+            <label for="modelo">Modelo</label>
+            <input type="text" class="form-control" id="modelo" required 
+                   minlength="2" 
+                   maxlength="50"
+                   pattern="[A-Za-z0-9\s\-]+"
+                   placeholder="Ej: Corolla, Ranger"
+                   title="Solo letras, números, espacios y guiones">
+          </div>
+          <div class="form-group">
+            <label for="color">Color</label>
+            <input type="text" class="form-control" id="color" required 
+                   minlength="3" 
+                   maxlength="30"
+                   pattern="[A-Za-z\s]+"
+                   placeholder="Ej: Blanco, Azul"
+                   title="Solo letras y espacios">
+          </div>
+          <div class="form-group">
+            <label for="marca">Marca</label>
+            <input type="text" class="form-control" id="marca" required 
+                   minlength="2" 
+                   maxlength="30"
+                   pattern="[A-Za-z\s]+"
+                   placeholder="Ej: Toyota, Ford"
+                   title="Solo letras y espacios">
+          </div>
+          <div class="form-group">
+            <label for="capacidad_carga">Capacidad de Carga (kg)</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="capacidad_carga" required 
+                     min="50" 
+                     max="50000" 
+                     step="0.01"
+                     placeholder="500">
+              <div class="input-group-append">
+                <span class="input-group-text">kg</span>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar Vehículo</button>
+          <button type="button" class="btn btn-secondary ml-2" id="cancelar-edicion" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
+          <input type="hidden" id="editMode" value="false">
+        </form>
+        <div id="vehiculos-list">
+          <h2>Lista de Vehículos</h2>
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th>Placa</th>
+                <th>Modelo</th>
+                <th>Color</th>
+                <th>Marca</th>
+                <th>Capacidad de Carga (kg)</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se mostrarán los vehículos -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Cargar los vehículos y mostrarlos en la tabla
+    window.onload = function() {
+      fetch('/api/vehiculos')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Error al cargar vehículos: ${response.status} - ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const tableBody = document.querySelector('#vehiculos-list tbody');
+          data.forEach(vehiculo => {
+            const row = document.createElement('tr');
+            row.id = `vehiculo-${vehiculo.placa}`;
+            row.innerHTML = `
+              <td>${vehiculo.placa}</td>
+              <td>${vehiculo.modelo}</td>
+              <td>${vehiculo.color}</td>
+              <td>${vehiculo.marca}</td>
+              <td>${vehiculo.capacidad_carga} kg</td>
+              <td>
+                <button class="btn btn-warning btn-sm" onclick="editarVehiculo('${vehiculo.placa}')">Editar</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarVehiculo('${vehiculo.placa}')">Eliminar</button>
+              </td>
+            `;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar vehículos:', error);
+          const tableBody = document.querySelector('#vehiculos-list tbody');
+          tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error al cargar los vehículos. Por favor, recarga la página.</td></tr>';
+        });
+    };
+
+    // Agregar o actualizar un vehículo
+    document.getElementById('vehiculo-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const placa = document.getElementById('placa').value.toUpperCase();
+      const modelo = document.getElementById('modelo').value.trim();
+      const color = document.getElementById('color').value.trim();
+      const marca = document.getElementById('marca').value.trim();
+      const capacidad_carga = parseFloat(document.getElementById('capacidad_carga').value);
+
+      // Validaciones adicionales
+      if (!validarPlaca(placa)) {
+        alert('La placa debe tener exactamente 3 letras seguidas de 3 números (ej: ABC123)');
+        return;
+      }
+
+      // Verificar placa duplicada solo para nuevos vehículos
+      const editMode = document.getElementById('editMode').value;
+      if (editMode === "false" && verificarPlacaDuplicada(placa)) {
+        alert('Ya existe un vehículo con la placa ' + placa + '. Por favor, use una placa diferente.');
+        document.getElementById('placa').focus();
+        return;
+      }
+
+      if (!validarModelo(modelo, 2, 50)) {
+        alert('El modelo debe tener entre 2 y 50 caracteres');
+        return;
+      }
+
+      if (!validarTextoSoloLetras(color, 3, 30)) {
+        alert('El color debe tener entre 3 y 30 caracteres y solo contener letras');
+        return;
+      }
+
+      if (!validarTextoSoloLetras(marca, 2, 30)) {
+        alert('La marca debe tener entre 2 y 30 caracteres y solo contener letras');
+        return;
+      }
+
+      if (capacidad_carga < 50 || capacidad_carga > 50000) {
+        alert('La capacidad de carga debe estar entre 50 y 50,000 kg');
+        return;
+      }
+
+      const vehiculo = {
+        placa: placa,
+        modelo: modelo,
+        color: color,
+        marca: marca,
+        capacidad_carga: capacidad_carga
+      };
+
+      const method = editMode === "true" ? 'PUT' : 'POST';
+      const url = editMode === "true" ? `/api/vehiculos/${placa}` : '/api/vehiculos';
+      
+      fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(vehiculo)
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(errorData => {
+            throw new Error(errorData.error || errorData.message || `Error del servidor: ${response.status}`);
+          }).catch(jsonError => {
+            // Si no se puede parsear el JSON, usar el status
+            throw new Error(`Error del servidor: ${response.status} - ${response.statusText}`);
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Respuesta del servidor:', data);
+        const tableBody = document.querySelector('#vehiculos-list tbody');
+        if (method === 'POST') {
+          const row = document.createElement('tr');
+          row.id = `vehiculo-${placa}`;
+          row.innerHTML = `
+            <td>${placa}</td>
+            <td>${data.modelo}</td>
+            <td>${data.color}</td>
+            <td>${data.marca}</td>
+            <td>${data.capacidad_carga} kg</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="editarVehiculo('${placa}')">Editar</button>
+              <button class="btn btn-danger btn-sm" onclick="eliminarVehiculo('${placa}')">Eliminar</button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        } else {
+          const row = document.getElementById(`vehiculo-${placa}`);
+          row.innerHTML = `
+            <td>${placa}</td>
+            <td>${data.modelo}</td>
+            <td>${data.color}</td>
+            <td>${data.marca}</td>
+            <td>${data.capacidad_carga} kg</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="editarVehiculo('${placa}')">Editar</button>
+              <button class="btn btn-danger btn-sm" onclick="eliminarVehiculo('${placa}')">Eliminar</button>
+            </td>
+          `;
+        }
+        document.getElementById('vehiculo-form').reset();
+        document.getElementById('editMode').value = "false";
+        document.getElementById('placa').disabled = false;
+        document.getElementById('placa').style.borderColor = '';
+        document.getElementById('placa').style.backgroundColor = '';
+        ocultarMensajePlaca();
+      })
+      .catch(error => {
+        console.error('Error completo:', error);
+        let mensajeError = 'Error desconocido';
+        
+        if (error.message) {
+          mensajeError = error.message;
+        } else if (typeof error === 'string') {
+          mensajeError = error;
+        } else if (error.error) {
+          mensajeError = error.error;
+        }
+        
+        alert('Error al guardar el vehículo: ' + mensajeError);
+      });
+    });
+
+    // Eliminar un vehículo
+    function eliminarVehiculo(placa) {
+      if (confirm(`¿Está seguro de que desea eliminar el vehículo con placa ${placa}?`)) {
+        fetch(`/api/vehiculos/${placa}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(errorData => {
+              throw new Error(errorData.error || errorData.message || `Error del servidor: ${response.status}`);
+            }).catch(jsonError => {
+              throw new Error(`Error del servidor: ${response.status} - ${response.statusText}`);
+            });
+          }
+          return response.status === 204 ? null : response.json();
+        })
+        .then(() => {
+          document.getElementById(`vehiculo-${placa}`).remove();
+          console.log(`Vehículo ${placa} eliminado exitosamente`);
+        })
+        .catch(error => {
+          console.error('Error completo al eliminar:', error);
+          let mensajeError = 'Error desconocido';
+          
+          if (error.message) {
+            mensajeError = error.message;
+          } else if (typeof error === 'string') {
+            mensajeError = error;
+          } else if (error.error) {
+            mensajeError = error.error;
+          }
+          
+          alert('Error al eliminar el vehículo: ' + mensajeError);
+        });
+      }
+    }
+
+    // Rellenar los campos del formulario para editar un vehículo
+    function editarVehiculo(placa) {
+      fetch(`/api/vehiculos/${placa}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Error al cargar el vehículo: ${response.status} - ${response.statusText}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById('placa').value = data.placa;
+          document.getElementById('modelo').value = data.modelo;
+          document.getElementById('color').value = data.color;
+          document.getElementById('marca').value = data.marca;
+          document.getElementById('capacidad_carga').value = data.capacidad_carga;
+          document.getElementById('editMode').value = "true";
+          document.getElementById('placa').disabled = true;
+          document.getElementById('cancelar-edicion').style.display = 'inline-block';
+          ocultarMensajePlaca();
+        })
+        .catch(error => {
+          console.error('Error al cargar vehículo para editar:', error);
+          alert('Error al cargar los datos del vehículo: ' + error.message);
+        });
+    }
+
+    // Función para cancelar la edición
+    function cancelarEdicion() {
+      document.getElementById('vehiculo-form').reset();
+      document.getElementById('editMode').value = "false";
+      document.getElementById('placa').disabled = false;
+      document.getElementById('cancelar-edicion').style.display = 'none';
+      document.getElementById('placa').style.borderColor = '';
+      document.getElementById('placa').style.backgroundColor = '';
+      ocultarMensajePlaca();
+    }
+
+    // Funciones de validación
+    function validarPlaca(placa) {
+      const regex = /^[A-Za-z]{3}[0-9]{3}$/;
+      return regex.test(placa);
+    }
+
+    function verificarPlacaDuplicada(placa) {
+      // Verificar si ya existe un vehículo con esta placa en la tabla
+      const filaExistente = document.getElementById(`vehiculo-${placa}`);
+      return filaExistente !== null;
+    }
+
+    function validarModelo(texto, minLength, maxLength) {
+      if (texto.length < minLength || texto.length > maxLength) {
+        return false;
+      }
+      return /^[A-Za-z0-9\s\-]+$/.test(texto);
+    }
+
+    function validarTextoSoloLetras(texto, minLength, maxLength) {
+      if (texto.length < minLength || texto.length > maxLength) {
+        return false;
+      }
+      return /^[A-Za-z\s]+$/.test(texto);
+    }
+
+    // Eventos para formato en tiempo real
+    document.getElementById('placa').addEventListener('input', function(e) {
+      let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (value.length > 6) value = value.substring(0, 6);
+      e.target.value = value;
+      
+      // Verificar duplicados en tiempo real solo si no estamos editando
+      const editMode = document.getElementById('editMode').value;
+      if (editMode === "false" && value.length === 6 && verificarPlacaDuplicada(value)) {
+        e.target.style.borderColor = '#dc3545';
+        e.target.style.backgroundColor = '#f8d7da';
+        // Mostrar mensaje de error debajo del input
+        mostrarMensajePlaca('Ya existe un vehículo con esta placa', 'error');
+      } else {
+        e.target.style.borderColor = '';
+        e.target.style.backgroundColor = '';
+        ocultarMensajePlaca();
+      }
+    });
+
+    document.getElementById('modelo').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^A-Za-z0-9\s\-]/g, '');
+      if (value.length > 50) value = value.substring(0, 50);
+      e.target.value = value;
+    });
+
+    document.getElementById('color').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^A-Za-z\s]/g, '');
+      if (value.length > 30) value = value.substring(0, 30);
+      e.target.value = value;
+    });
+
+    document.getElementById('marca').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^A-Za-z\s]/g, '');
+      if (value.length > 30) value = value.substring(0, 30);
+      e.target.value = value;
+    });
+
+    // Funciones para mostrar mensajes de error en la placa
+    function mostrarMensajePlaca(mensaje, tipo) {
+      let mensajeDiv = document.getElementById('mensaje-placa');
+      if (!mensajeDiv) {
+        mensajeDiv = document.createElement('div');
+        mensajeDiv.id = 'mensaje-placa';
+        mensajeDiv.style.fontSize = '12px';
+        mensajeDiv.style.marginTop = '5px';
+        document.getElementById('placa').parentNode.appendChild(mensajeDiv);
+      }
+      
+      mensajeDiv.textContent = mensaje;
+      mensajeDiv.className = tipo === 'error' ? 'text-danger' : 'text-success';
+      mensajeDiv.style.display = 'block';
+    }
+
+    function ocultarMensajePlaca() {
+      const mensajeDiv = document.getElementById('mensaje-placa');
+      if (mensajeDiv) {
+        mensajeDiv.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

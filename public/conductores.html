@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Conductores</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="/css/styles.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Entrega de Paquetes</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/vehiculos.html">Vehículos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/conductores.html">Conductores</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/rutasProgramadas.html">Rutas Programadas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/detalleRutas.html">Detalle de Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/buscarRutas.html">Buscar Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mapa.html">Mapa de Rutas</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-body">
+        <h1 class="mb-4">Gestión de Conductores</h1>
+        <form id="conductor-form" class="mb-4">
+          <div class="form-group">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" required disabled>
+          </div>
+          <div class="form-group">
+            <label for="nombres">Nombres</label>
+            <input type="text" class="form-control" id="nombres" required>
+          </div>
+          <div class="form-group">
+            <label for="apellidos">Apellidos</label>
+            <input type="text" class="form-control" id="apellidos" required>
+          </div>
+          <div class="form-group">
+            <label for="numero_licencia">Número de Licencia</label>
+            <input type="text" class="form-control" id="numero_licencia" required>
+          </div>
+          <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input type="text" class="form-control" id="telefono" required>
+          </div>
+          <div class="form-group">
+            <label for="correo">Correo</label>
+            <input type="email" class="form-control" id="correo" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar Conductor</button>
+          <input type="hidden" id="editMode" value="false">
+        </form>
+        <div id="conductores-list">
+          <h2>Lista de Conductores</h2>
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th>ID</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Número de Licencia</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se mostrarán los conductores -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Cargar los conductores y mostrarlos en la tabla
+    window.onload = function() {
+      fetch('/api/conductores')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Error al cargar conductores: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const tableBody = document.querySelector('#conductores-list tbody');
+          data.forEach(conductor => {
+            const row = document.createElement('tr');
+            row.id = `conductor-${conductor.id}`;
+            row.innerHTML = `
+              <td>${conductor.id}</td>
+              <td>${conductor.nombres}</td>
+              <td>${conductor.apellidos}</td>
+              <td>${conductor.numero_licencia}</td>
+              <td>${conductor.telefono}</td>
+              <td>${conductor.correo}</td>
+              <td>
+                <button class="btn btn-warning btn-sm" onclick="editarConductor('${conductor.id}')">Editar</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarConductor('${conductor.id}')">Eliminar</button>
+              </td>
+            `;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar conductores:', error);
+          alert('Error al cargar la lista de conductores: ' + error.message);
+        });
+    };
+
+    // Agregar o actualizar un conductor
+    document.getElementById('conductor-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const conductor = {
+        nombres: document.getElementById('nombres').value,
+        apellidos: document.getElementById('apellidos').value,
+        numero_licencia: document.getElementById('numero_licencia').value,
+        telefono: document.getElementById('telefono').value,
+        correo: document.getElementById('correo').value
+      };
+
+      const id = document.getElementById('id').value;
+      const editMode = document.getElementById('editMode').value;
+      const method = editMode === "true" ? 'PUT' : 'POST';
+      const url = editMode === "true" ? `/api/conductores/${id}` : '/api/conductores';
+      
+      fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(conductor)
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(errorData => {
+            throw new Error(errorData.error || `Error del servidor: ${response.status}`);
+          }).catch(jsonError => {
+            throw new Error(`Error del servidor: ${response.status} - ${response.statusText}`);
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        const tableBody = document.querySelector('#conductores-list tbody');
+        if (method === 'POST') {
+          const row = document.createElement('tr');
+          row.id = `conductor-${data.id}`;
+          row.innerHTML = `
+            <td>${data.id}</td>
+            <td>${data.nombres}</td>
+            <td>${data.apellidos}</td>
+            <td>${data.numero_licencia}</td>
+            <td>${data.telefono}</td>
+            <td>${data.correo}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="editarConductor('${data.id}')">Editar</button>
+              <button class="btn btn-danger btn-sm" onclick="eliminarConductor('${data.id}')">Eliminar</button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        } else {
+          const row = document.getElementById(`conductor-${id}`);
+          row.innerHTML = `
+            <td>${id}</td>
+            <td>${data.nombres}</td>
+            <td>${data.apellidos}</td>
+            <td>${data.numero_licencia}</td>
+            <td>${data.telefono}</td>
+            <td>${data.correo}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="editarConductor('${id}')">Editar</button>
+              <button class="btn btn-danger btn-sm" onclick="eliminarConductor('${id}')">Eliminar</button>
+            </td>
+          `;
+        }
+        document.getElementById('conductor-form').reset();
+        document.getElementById('editMode').value = "false";
+        document.getElementById('id').disabled = false;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar el conductor: ' + error.message);
+      });
+    });
+
+    // Eliminar un conductor
+    function eliminarConductor(id) {
+      if (confirm(`¿Está seguro de que desea eliminar el conductor con ID ${id}?`)) {
+        fetch(`/api/conductores/${id}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(errorData => {
+              throw new Error(errorData.error || `Error del servidor: ${response.status}`);
+            }).catch(jsonError => {
+              throw new Error(`Error del servidor: ${response.status} - ${response.statusText}`);
+            });
+          }
+          return response.status === 204 ? null : response.json();
+        })
+        .then(() => {
+          document.getElementById(`conductor-${id}`).remove();
+          console.log(`Conductor ${id} eliminado exitosamente`);
+        })
+        .catch(error => {
+          console.error('Error al eliminar:', error);
+          alert('Error al eliminar el conductor: ' + error.message);
+        });
+      }
+    }
+
+    // Rellenar los campos del formulario para editar un conductor
+    function editarConductor(id) {
+      fetch(`/api/conductores/${id}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Error al cargar el conductor: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById('id').value = data.id;
+          document.getElementById('nombres').value = data.nombres;
+          document.getElementById('apellidos').value = data.apellidos;
+          document.getElementById('numero_licencia').value = data.numero_licencia;
+          document.getElementById('telefono').value = data.telefono;
+          document.getElementById('correo').value = data.correo;
+          document.getElementById('editMode').value = "true";
+          document.getElementById('id').disabled = true;
+        })
+        .catch(error => {
+          console.error('Error al cargar conductor:', error);
+          alert('Error al cargar los datos del conductor: ' + error.message);
+        });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscar Rutas Programadas</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="/css/styles.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Entrega de Paquetes</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/vehiculos.html">Vehículos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/conductores.html">Conductores</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/rutasProgramadas.html">Rutas Programadas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/detalleRutas.html">Detalle de Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/buscarRutas.html">Buscar Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mapa.html">Mapa de Rutas</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-body">
+        <h1 class="mb-4">Buscar Rutas Programadas</h1>
+        <form id="buscar-rutas-form" class="mb-4">
+          <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+          <div id="success-message" class="alert alert-success" style="display: none;"></div>
+          <div class="form-group">
+            <label for="buscar-vehiculo">Buscar por Vehículo</label>
+            <select class="form-control" id="buscar-vehiculo">
+              <option value="">Seleccionar Vehículo</option>
+              <!-- Opciones de vehículos se cargarán aquí -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="buscar-conductor">Buscar por Conductor</label>
+            <select class="form-control" id="buscar-conductor">
+              <option value="">Seleccionar Conductor</option>
+              <!-- Opciones de conductores se cargarán aquí -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="buscar-fecha">Buscar por Fecha</label>
+            <input type="date" class="form-control" id="buscar-fecha">
+          </div>
+          <button type="submit" class="btn btn-primary">Buscar</button>
+          <button type="button" class="btn btn-secondary" onclick="limpiarBusqueda()">Limpiar</button>
+        </form>
+        <div id="rutas-list">
+          <h2>Lista de Rutas Programadas</h2>
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th>Conductor</th>
+                <th>Vehículo</th>
+                <th>Fecha</th>
+                <th>Ruta</th>
+                <th>Mapa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se mostrarán las rutas programadas -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Función para formatear fechas
+    function formatearFecha(fechaISO) {
+      if (!fechaISO) return 'No definida';
+      const fecha = new Date(fechaISO);
+      return fecha.toLocaleDateString('es-CO', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    }
+
+    // Función para mostrar mensajes
+    function mostrarMensaje(mensaje, tipo) {
+      const errorDiv = document.getElementById('error-message');
+      const successDiv = document.getElementById('success-message');
+      
+      // Ocultar ambos mensajes primero
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      
+      if (tipo === 'error') {
+        errorDiv.textContent = mensaje;
+        errorDiv.style.display = 'block';
+        setTimeout(() => {
+          errorDiv.style.display = 'none';
+        }, 5000);
+      } else if (tipo === 'success') {
+        successDiv.textContent = mensaje;
+        successDiv.style.display = 'block';
+        setTimeout(() => {
+          successDiv.style.display = 'none';
+        }, 3000);
+      }
+    }
+
+    // Función para limpiar búsqueda
+    function limpiarBusqueda() {
+      document.getElementById('buscar-rutas-form').reset();
+      document.getElementById('error-message').style.display = 'none';
+      document.getElementById('success-message').style.display = 'none';
+      
+      // Mostrar todas las rutas
+      cargarTodasLasRutas();
+    }
+
+    // Cargar opciones de conductores y vehículos
+    function cargarOpciones() {
+      fetch('/api/conductores')
+        .then(response => response.json())
+        .then(data => {
+          const conductorSelect = document.getElementById('buscar-conductor');
+          conductorSelect.innerHTML = '<option value="">Seleccionar Conductor</option>';
+          data.forEach(conductor => {
+            const option = document.createElement('option');
+            option.value = conductor.id;
+            option.text = `${conductor.id} - ${conductor.nombres} ${conductor.apellidos}`;
+            conductorSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar conductores:', error);
+          mostrarMensaje('Error al cargar la lista de conductores', 'error');
+        });
+
+      fetch('/api/vehiculos')
+        .then(response => response.json())
+        .then(data => {
+          const vehiculoSelect = document.getElementById('buscar-vehiculo');
+          vehiculoSelect.innerHTML = '<option value="">Seleccionar Vehículo</option>';
+          data.forEach(vehiculo => {
+            const option = document.createElement('option');
+            option.value = vehiculo.placa;
+            option.text = `${vehiculo.placa} - ${vehiculo.marca}`;
+            vehiculoSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar vehículos:', error);
+          mostrarMensaje('Error al cargar la lista de vehículos', 'error');
+        });
+    }
+
+    // Función para cargar todas las rutas
+    function cargarTodasLasRutas() {
+      fetch('/api/rutasProgramadas')
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+          }
+          return response.json();
+        })
+        .then(data => {
+          mostrarRutasEnTabla(data);
+        })
+        .catch(error => {
+          console.error('Error al cargar rutas:', error);
+          mostrarMensaje('Error al cargar las rutas programadas', 'error');
+        });
+    }
+
+    // Función para mostrar rutas en la tabla
+    function mostrarRutasEnTabla(data) {
+      const tableBody = document.querySelector('#rutas-list tbody');
+      tableBody.innerHTML = '';
+      
+      if (data.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="5" class="text-center">No se encontraron rutas programadas</td>';
+        tableBody.appendChild(row);
+        return;
+      }
+      
+      data.forEach(ruta => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${ruta.conductor_id}</td>
+          <td>${ruta.vehiculo_placa}</td>
+          <td>${formatearFecha(ruta.fecha_programada)}</td>
+          <td>${ruta.ruta}</td>
+          <td>
+            <button class="btn btn-info btn-sm ver-mapa" data-id="${ruta.id}">Ver Mapa</button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+      
+      // Agregar event listeners a los botones de mapa
+      document.querySelectorAll('.ver-mapa').forEach(button => {
+        button.addEventListener('click', function() {
+          const rutaId = this.getAttribute('data-id');
+          window.location.href = `/mapa.html?rutaId=${rutaId}`;
+        });
+      });
+    }
+
+    // Buscar rutas programadas y mostrarlas en la tabla
+    document.getElementById('buscar-rutas-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const vehiculo = document.getElementById('buscar-vehiculo').value;
+      const conductor = document.getElementById('buscar-conductor').value;
+      const fecha = document.getElementById('buscar-fecha').value;
+
+      let query = `/api/rutasProgramadas?`;
+      const params = [];
+      
+      if (vehiculo) params.push(`vehiculo=${vehiculo}`);
+      if (conductor) params.push(`conductor=${conductor}`);
+      if (fecha) params.push(`fecha=${fecha}`);
+      
+      query += params.join('&');
+
+      fetch(query)
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+          }
+          return response.json();
+        })
+        .then(data => {
+          mostrarRutasEnTabla(data);
+          if (data.length === 0) {
+            mostrarMensaje('No se encontraron rutas con los criterios seleccionados', 'error');
+          } else {
+            mostrarMensaje(`Se encontraron ${data.length} ruta(s)`, 'success');
+          }
+        })
+        .catch(error => {
+          console.error('Error en la búsqueda:', error);
+          const mensaje = error.error || 'Error al buscar las rutas programadas';
+          mostrarMensaje(mensaje, 'error');
+        });
+    });
+
+    // Inicializar el formulario y cargar opciones al cargar la página
+    window.onload = function() {
+      cargarOpciones();
+      cargarTodasLasRutas(); // Cargar todas las rutas al inicio
+    };
+  </script>
+</body>
+</html>

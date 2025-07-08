@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Rutas Programadas</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="/css/styles.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Entrega de Paquetes</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/vehiculos.html">Vehículos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/conductores.html">Conductores</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/rutasProgramadas.html">Rutas Programadas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/detalleRutas.html">Detalle de Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/buscarRutas.html">Buscar Rutas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/mapa.html">Mapa de Rutas</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-body">
+        <h1 class="mb-4">Gestión de Rutas Programadas</h1>
+        <form id="ruta-form" class="mb-4">
+          <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+          <div id="success-message" class="alert alert-success" style="display: none;"></div>
+          <div class="form-group">
+            <label for="conductor">Conductor</label>
+            <select class="form-control" id="conductor" required>
+              <option value="">Seleccione un conductor</option>
+              <!-- Opciones de conductores se cargarán aquí -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="vehiculo">Vehículo</label>
+            <select class="form-control" id="vehiculo" required>
+              <option value="">Seleccione un vehículo</option>
+              <!-- Opciones de vehículos se cargarán aquí -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fecha">Fecha</label>
+            <input type="date" class="form-control" id="fecha" required>
+          </div>
+          <div class="form-group">
+            <label for="ruta">Ruta</label>
+            <input type="text" class="form-control" id="ruta" placeholder="Ej: Av. Principal - Zona Norte" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar Ruta</button>
+          <button type="button" class="btn btn-secondary" onclick="cancelarEdicion()">Cancelar</button>
+          <input type="hidden" id="editMode" value="false">
+          <input type="hidden" id="rutaId" value="">
+        </form>
+        <div id="rutas-list">
+          <h2>Lista de Rutas Programadas</h2>
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th>Conductor</th>
+                <th>Vehículo</th>
+                <th>Fecha</th>
+                <th>Ruta</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se mostrarán las rutas programadas -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    // Función para formatear fechas
+    function formatearFecha(fechaISO) {
+      if (!fechaISO) return '';
+      const fecha = new Date(fechaISO);
+      return fecha.toLocaleDateString('es-CO', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    }
+
+    // Función para formatear fecha para input date (YYYY-MM-DD)
+    function formatearFechaParaInput(fechaISO) {
+      if (!fechaISO) return '';
+      const fecha = new Date(fechaISO);
+      return fecha.toISOString().split('T')[0];
+    }
+
+    // Función para mostrar mensajes
+    function mostrarMensaje(mensaje, tipo) {
+      const errorDiv = document.getElementById('error-message');
+      const successDiv = document.getElementById('success-message');
+      
+      // Ocultar ambos mensajes primero
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+      
+      if (tipo === 'error') {
+        errorDiv.textContent = mensaje;
+        errorDiv.style.display = 'block';
+        setTimeout(() => {
+          errorDiv.style.display = 'none';
+        }, 5000);
+      } else if (tipo === 'success') {
+        successDiv.textContent = mensaje;
+        successDiv.style.display = 'block';
+        setTimeout(() => {
+          successDiv.style.display = 'none';
+        }, 3000);
+      }
+    }
+
+    // Función para cancelar edición
+    function cancelarEdicion() {
+      document.getElementById('ruta-form').reset();
+      document.getElementById('editMode').value = "false";
+      document.getElementById('rutaId').value = "";
+      document.getElementById('error-message').style.display = 'none';
+      document.getElementById('success-message').style.display = 'none';
+      
+      // Restaurar el texto del botón
+      document.querySelector('button[type="submit"]').textContent = 'Guardar Ruta';
+    }
+
+    // Cargar opciones de conductores y vehículos
+    function cargarOpciones() {
+      fetch('/api/conductores')
+        .then(response => response.json())
+        .then(data => {
+          const conductorSelect = document.getElementById('conductor');
+          conductorSelect.innerHTML = '<option value="">Seleccione un conductor</option>';
+          data.forEach(conductor => {
+            const option = document.createElement('option');
+            option.value = conductor.id;
+            option.text = `${conductor.id} - ${conductor.nombres} ${conductor.apellidos}`;
+            conductorSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar conductores:', error);
+          mostrarMensaje('Error al cargar la lista de conductores', 'error');
+        });
+
+      fetch('/api/vehiculos')
+        .then(response => response.json())
+        .then(data => {
+          const vehiculoSelect = document.getElementById('vehiculo');
+          vehiculoSelect.innerHTML = '<option value="">Seleccione un vehículo</option>';
+          data.forEach(vehiculo => {
+            const option = document.createElement('option');
+            option.value = vehiculo.placa;
+            option.text = `${vehiculo.placa} - ${vehiculo.marca}`;
+            vehiculoSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar vehículos:', error);
+          mostrarMensaje('Error al cargar la lista de vehículos', 'error');
+        });
+    }
+
+    // Cargar rutas programadas y mostrarlas en la tabla
+    function cargarRutasProgramadas() {
+      fetch('/api/rutasProgramadas')
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.querySelector('#rutas-list tbody');
+          tableBody.innerHTML = '';
+          data.forEach(ruta => {
+            const row = document.createElement('tr');
+            row.id = `ruta-${ruta.id}`;
+            row.innerHTML = `
+              <td>${ruta.conductor_id}</td>
+              <td>${ruta.vehiculo_placa}</td>
+              <td>${formatearFecha(ruta.fecha_programada)}</td>
+              <td>${ruta.ruta}</td>
+              <td>
+                <button class="btn btn-warning btn-sm" onclick="editarRuta('${ruta.id}')">Editar</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarRuta('${ruta.id}')">Eliminar</button>
+              </td>
+            `;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar rutas programadas:', error);
+          mostrarMensaje('Error al cargar las rutas programadas', 'error');
+        });
+    }
+
+    // Agregar o actualizar una ruta programada
+    document.getElementById('ruta-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const conductor_id = document.getElementById('conductor').value;
+      const vehiculo_placa = document.getElementById('vehiculo').value;
+      const fecha = document.getElementById('fecha').value;
+      const ruta = document.getElementById('ruta').value;
+      
+      // Validación básica
+      if (!conductor_id || !vehiculo_placa || !fecha || !ruta.trim()) {
+        mostrarMensaje('Todos los campos son requeridos', 'error');
+        return;
+      }
+
+      const rutaData = {
+        conductor_id,
+        vehiculo_placa,
+        fecha,
+        ruta: ruta.trim()
+      };
+
+      const rutaId = document.getElementById('rutaId').value;
+      const editMode = document.getElementById('editMode').value;
+      const method = editMode === "true" ? 'PUT' : 'POST';
+      const url = editMode === "true" ? `/api/rutasProgramadas/${rutaId}` : '/api/rutasProgramadas';
+      
+      fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(rutaData)
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => Promise.reject(err));
+        }
+        return response.json();
+      })
+      .then(data => {
+        const mensaje = editMode === "true" ? 'Ruta programada actualizada exitosamente' : 'Ruta programada creada exitosamente';
+        mostrarMensaje(mensaje, 'success');
+        cargarRutasProgramadas();
+        cancelarEdicion();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        const mensaje = error.error || 'Error al procesar la solicitud';
+        mostrarMensaje(mensaje, 'error');
+      });
+    });
+
+    // Eliminar una ruta programada
+    function eliminarRuta(id) {
+      if (!confirm('¿Está seguro de que desea eliminar esta ruta programada?')) {
+        return;
+      }
+
+      fetch(`/api/rutasProgramadas/${id}`, {
+        method: 'DELETE'
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => Promise.reject(err));
+        }
+        return response.json();
+      })
+      .then(data => {
+        mostrarMensaje('Ruta programada eliminada exitosamente', 'success');
+        document.getElementById(`ruta-${id}`).remove();
+      })
+      .catch(error => {
+        console.error('Error al eliminar ruta:', error);
+        const mensaje = error.message || 'Error al eliminar la ruta programada';
+        mostrarMensaje(mensaje, 'error');
+      });
+    }
+
+    // Rellenar los campos del formulario para editar una ruta programada
+    function editarRuta(id) {
+      fetch(`/api/rutasProgramadas/${id}`)
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+          }
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById('conductor').value = data.conductor_id;
+          document.getElementById('vehiculo').value = data.vehiculo_placa;
+          document.getElementById('fecha').value = formatearFechaParaInput(data.fecha_programada);
+          document.getElementById('ruta').value = data.ruta;
+          document.getElementById('editMode').value = "true";
+          document.getElementById('rutaId').value = id;
+          
+          // Cambiar el texto del botón
+          document.querySelector('button[type="submit"]').textContent = 'Actualizar Ruta';
+        })
+        .catch(error => {
+          console.error('Error al cargar datos de la ruta:', error);
+          const mensaje = error.message || 'Error al cargar los datos de la ruta programada';
+          mostrarMensaje(mensaje, 'error');
+        });
+    }
+
+    // Inicializar el formulario y cargar opciones al cargar la página
+    window.onload = function() {
+      cargarOpciones();
+      cargarRutasProgramadas();
+    };
+  </script>
+</body>
+</html>

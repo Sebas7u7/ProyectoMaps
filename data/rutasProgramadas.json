@@ -1,0 +1,42 @@
+[
+  {
+    "conductor": "Juan Pérez",
+    "vehiculo": "ABC-123",
+    "fecha": "2023-06-15",
+    "ruta": "Ruta 101"
+  },
+  {
+    "id": "2",
+    "conductor": "María García",
+    "vehiculo": "XYZ-789",
+    "fecha": "2023-06-16",
+    "ruta": "Ruta 102"
+  },
+  {
+    "id": "3",
+    "conductor": "Carlos Rodríguez",
+    "vehiculo": "LMN-456",
+    "fecha": "2023-06-17",
+    "ruta": "Ruta 103"
+  },
+  {
+    "id": "4",
+    "conductor": "Ana Fernández",
+    "vehiculo": "JKL-321",
+    "fecha": "2023-06-18",
+    "ruta": "Ruta 104"
+  },
+  {
+    "id": "5",
+    "conductor": "Pedro López",
+    "vehiculo": "OPQ-987",
+    "fecha": "2023-06-19",
+    "ruta": "Ruta 105"
+  },
+  {
+    "conductor": "Martin Mejia",
+    "vehiculo": "LMN-453",
+    "fecha": "2025-02-12",
+    "ruta": "Ruta 103"
+  }
+]
